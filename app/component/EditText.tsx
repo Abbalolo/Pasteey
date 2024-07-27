@@ -12,34 +12,34 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState, ChangeEvent } from "react";
 import { FiEdit } from "react-icons/fi";
 
 // Interface defining the props for the EditLink component
-interface EditLinkProps {
+interface EditTextProps {
   dataId: string;
-  title: string;
-  links: string;
-  handleEdit: (id: string, name: string, link: string) => void;
+  tTitle: string;
+  text: string;
+  handleEdit: (id: string, name: string, text: string) => void;
   handleDelete: (id: string) => void;
  
 }
 
-export function EditLink({ dataId, title: initialTitle, links: initialLinks, handleEdit, handleDelete }: EditLinkProps) {
-  const [name, setName] = useState<string>(initialTitle);
-  const [link, setLink] = useState<string>(initialLinks);
+export function EditText({ dataId, tTitle: initialtTitle, text: initialText, handleEdit, handleDelete}: EditTextProps) {
+  const [name, setName] = useState<string>(initialtTitle);
+  const [text, setText] = useState<string>(initialText);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
- 
   const router = useRouter();
 
-  // Handles form submission
+  
   const handleForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      await handleEdit(dataId, name, link);
-      console.log({ name, link });
+      await handleEdit(dataId, name, text);
+      console.log({ name, text });
       setIsDialogOpen(false);
       toast({
         description: "Save Successfully",
@@ -48,8 +48,7 @@ export function EditLink({ dataId, title: initialTitle, links: initialLinks, han
       router.refresh(); // This reloads the page, consider updating the state directly if possible
      
     } catch (error) {
-      console.error("Error editing link:", error);
-      
+      console.error("Error editing text:", error);
       toast({
         description: "Update is Unsuccessfully",
        
@@ -57,21 +56,23 @@ export function EditLink({ dataId, title: initialTitle, links: initialLinks, han
     }
   };
 
-
   // Handles name input change
   const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
  
+
   // Handles link input change
-  const handleLinkChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLink(e.target.value);
+
+  const handleTextChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    setText(e.target.value);
   };
- 
 
   return (
     <>
     
+
+
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogTrigger asChild>
       <Button variant="outline" onClick={() => setIsDialogOpen(true)}>
@@ -81,7 +82,7 @@ export function EditLink({ dataId, title: initialTitle, links: initialLinks, han
       <DialogContent className="max-w-[425px] md:max-w-[500px]">
         <form onSubmit={handleForm}>
           <DialogHeader>
-            <DialogTitle>Edit name and links</DialogTitle>
+            <DialogTitle>Edit name and Text</DialogTitle>
             <DialogDescription>
               Make changes to your profile here. Click save when done
             </DialogDescription>
@@ -89,7 +90,7 @@ export function EditLink({ dataId, title: initialTitle, links: initialLinks, han
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">
-                Link Name
+                Text Name
               </Label>
               <Input
                 id="name"
@@ -99,15 +100,15 @@ export function EditLink({ dataId, title: initialTitle, links: initialLinks, han
                 required
               />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="link" className="text-right">
-                Link
+            <div className="grid grid-cols-4 gap-4">
+              <Label htmlFor="Text" className="text-right">
+                Text
               </Label>
-              <Input
+              <Textarea
                 id="link"
-                value={link}
-                onChange={handleLinkChange}
-                className="col-span-3"
+                value={text}
+                onChange={handleTextChange}
+                className="col-span-3 md:h-64"
                 required
               />
             </div>
@@ -117,16 +118,13 @@ export function EditLink({ dataId, title: initialTitle, links: initialLinks, han
               variant="destructive"
               onClick={() => handleDelete(dataId)}
             >
-              Delete Link
+              Delete Text
             </Button>
             <Button type="submit">Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>
-
-
-     
     </>
   );
 }
