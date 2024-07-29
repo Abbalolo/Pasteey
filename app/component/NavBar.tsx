@@ -35,7 +35,7 @@ function NavBar() {
   };
 
   return (
-    <header className='px-5 lg:px-16  py-5 flex justify-between items-center'>
+    <header className='px-5 lg:px-16  py-5 flex justify-between items-center gap-4 md:gap-0'>
       <Link className='text-[#000207] md:text-2xl font-extrabold' href="/">PasteMe</Link>
       {pathname !== "/authenticate" && <SearchPaste />}
       {isOpen &&  <div onClick={() => setIsOpen(false)} className="absolute top-16 left-0 w-full h-[89.5%] opacity-5 bg-gray-500 z-10"></div>}
