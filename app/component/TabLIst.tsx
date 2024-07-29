@@ -1,12 +1,20 @@
 "use client";
 
 import React, { useState } from 'react';
-import { LinkItem, TextItem, useContextData } from '../context/contextApi';
+import {  useContextData } from '../context/contextApi';
 import { ToolTip } from './ToolTip';
 import { EditLink } from './EditLink';
 import { Button } from '@/components/ui/button';
 import { Add } from './Add';
 import { EditText } from './EditText';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 
 
 const TabList = () => {
@@ -45,18 +53,39 @@ const TabList = () => {
       <div className="w-full">
         <div className="flex items-center justify-between">
           <div>
-            <div className="flex space-x-2 border-b">
+            <div className=" space-x-2 border-b hidden md:flex">
               {tabs.map((tab, index) => (
                 <button
                   key={index}
                   onClick={() => setActiveTab(index)}
                   className={`transition-all duration-200 ease-in-out px-4 py-2 text-sm font-medium focus:outline-none ${activeTab === index ? 'text-black' : 'text-gray-500'}`}
                 >
+          
                   {tab}
                 </button>
               ))}
             </div>
+            <div className="md:hidden ">
+            <Select
+            onValueChange={(value) => setActiveTab(Number(value))}
+            defaultValue={activeTab.toString()}
+           
+          >
+            <SelectTrigger>
+              <SelectValue placeholder={tabs[activeTab]} />
+            </SelectTrigger>
+            <SelectContent>
+              {tabs.map((tab, index) => (
+                <SelectItem key={index} value={index.toString()}>
+                  {tab}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+            </div>
           </div>
+          
+        
           <div className="flex items-center gap-2">
             <Button variant="outline" onClick={() => setOpenBox(true)}>Add</Button>
           </div>

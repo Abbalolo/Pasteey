@@ -7,6 +7,7 @@ import { ref, onValue, remove, update } from 'firebase/database';
 import { toast } from '@/components/ui/use-toast';
 
 // Define the type for the context state
+type Item = LinkItem | TextItem;
 interface DataContextType {
   data: LinkItem[];
   data2: TextItem[];
@@ -20,6 +21,9 @@ interface DataContextType {
   deleteData2: (id: string) => void;
   editData: (id: string, newData: { title: string; link: string }) => void;
   editData2: (id: string, newData: { tTitle: string; text: string }) => void;
+  searchResults: Item[];
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
 }
 
 export interface LinkItem {
@@ -46,6 +50,8 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const [recentData, setRecentData] = useState<LinkItem[]>([]);
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
+  const [searchResults, setSearchResults] = useState<Item[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -158,8 +164,26 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const handleSearch = (query: string) => {
+    const lowerCaseQuery = query.toLowerCase();
+    const allData: Item[] = [...data, ...data2];
+    const filteredResults = allData.filter(
+      (item) =>
+        ('title' in item && item.title.toLowerCase().includes(lowerCaseQuery)) ||
+        ('link' in item && item.link.toLowerCase().includes(lowerCaseQuery)) ||
+        ('tTitle' in item && item.tTitle.toLowerCase().includes(lowerCaseQuery)) ||
+        ('text' in item && item.text.toLowerCase().includes(lowerCaseQuery))
+    );
+    setSearchResults(filteredResults);
+  };
+
   return (
-    <DataContext.Provider value={{ data, data2, recentData, setData, setData2, isLogin, setIsLogin, user, deleteData, editData, deleteData2, editData2 }}>
+    <DataContext.Provider value={{ data, data2, recentData, setData, setData2, isLogin, setIsLogin, user, deleteData, editData, deleteData2, editData2,  searchResults,
+      searchQuery,
+      setSearchQuery: (query: string) => {
+        setSearchQuery(query);
+        handleSearch(query);
+      }, }}>
       {children}
     </DataContext.Provider>
   );
