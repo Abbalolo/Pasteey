@@ -19,7 +19,7 @@ import {
 
 const TabList = () => {
   const [activeTab, setActiveTab] = useState(0);
-  const { data, recentData, deleteData, editData, data2, deleteData2, editData2 } = useContextData();
+  const { data, recentData, recentData2, deleteData, editData, data2, deleteData2, editData2 } = useContextData();
   const [openBox, setOpenBox] = useState<boolean>(false);
 
   const tabs = ['All Task', "Links", "Texts", 'Recent'];
@@ -101,7 +101,7 @@ const TabList = () => {
                       <div className="w-2 bg-black"></div>
                       <div>
                         <h3>{item.title}</h3>
-                        <p className="text-sm text-gray-500 pb-2">{item.link}</p>
+                        <p className="text-sm text-gray-500 pb-2">{item.link.length > 25 ? item.link.slice(-25) : item.link}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
@@ -111,6 +111,25 @@ const TabList = () => {
                   </div>
                 </div>
               )) : <div className='text-center font-semibold text-xl m-10'>Ups... There are no data available</div>}
+
+
+              {Array.isArray(data2) && data2.length > 0 ? data2.map((item) => (
+                <div className="border pr-3" key={item.id}>
+                  <div className="flex justify-between items-center">
+                    <div className="flex gap-3">
+                      <div className="w-2 bg-black"></div>
+                      <div>
+                        <h3>{item.tTitle}</h3>
+                        <p className="text-sm text-gray-500 pb-2">{item.text.length > 25 ? item.text.slice(-25) : item.text}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <EditText handleDelete={handleDelete} tTitle={item.tTitle} text={item.text} handleEdit={handleEdit} dataId={item.id} />
+                      <ToolTip link={item.text} />
+                    </div>
+                  </div>
+                </div>
+              )) : ""}
             </div>
           )}
 
@@ -123,7 +142,8 @@ const TabList = () => {
                       <div className="w-2 bg-black"></div>
                       <div>
                         <h3>{item.title}</h3>
-                        <p className="text-sm text-gray-500 pb-2">{item.link}</p>
+                        <p className="text-sm text-gray-500 pb-2">{item.link.length > 25 ? item.link.slice(-25) : item.link}</p>
+                        
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
@@ -145,7 +165,8 @@ const TabList = () => {
                       <div className="w-2 bg-black"></div>
                       <div>
                         <h3>{item.tTitle}</h3>
-                        <p className="text-sm text-gray-500 pb-2">{item.text}</p>
+                        <p className="text-sm text-gray-500 pb-2">{item.text.length > 25 ? item.text.slice(-25) : item.text}</p>
+                     
                       </div>
                     </div>
                     <div className="flex items-center gap-1">
@@ -157,28 +178,48 @@ const TabList = () => {
               )) : <div className='text-center font-semibold text-xl m-10'>Ups... There are no Text data</div>}
             </div>
           )}
-
-          {activeTab === 3 && (
-            <div className='md:grid md:grid-cols-2 flex flex-col gap-3'>
-              {Array.isArray(recentData) && recentData.length > 0 ? recentData.map((item) => (
-                <div className="border pr-3" key={item.id}>
-                  <div className="flex justify-between items-center">
-                    <div className="flex gap-3">
-                      <div className="w-2 bg-black"></div>
-                      <div>
-                        <h3>{item.title}</h3>
-                        <p className="text-sm text-gray-500 pb-2">{item.link}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <EditLink handleDelete={handleDelete} title={item.title} links={item.link} handleEdit={handleEdit} dataId={item.id} />
-                      <ToolTip link={item.link} />
-                    </div>
-                  </div>
-                </div>
-              )) : <div className='text-center font-semibold text-xl m-10'>Ups... There are no Recent data</div>}
+{activeTab === 3 && (
+  <div className='md:grid md:grid-cols-2 flex flex-col gap-3'>
+    {/* Display recentData */}
+    {Array.isArray(recentData) && recentData.length > 0 ? recentData.map((item) => (
+      <div className="border pr-3" key={item.id}>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-3">
+            <div className="w-2 bg-black"></div>
+            <div>
+              <h3>{item.title}</h3>
+              <p className="text-sm text-gray-500 pb-2">{item.link.length > 25 ? item.link.slice(-25) : item.link}</p>
             </div>
-          )}
+          </div>
+          <div className="flex items-center gap-1">
+            <EditLink handleDelete={handleDelete} title={item.title} links={item.link} handleEdit={handleEdit} dataId={item.id} />
+            <ToolTip link={item.link} />
+          </div>
+        </div>
+      </div>
+    )) : <div className='text-center font-semibold text-xl m-10'>Ups... There are no Recent data</div>}
+
+    {/* Display recentData2 */}
+    {Array.isArray(recentData2) && recentData2.length > 0 ? recentData2.map((item) => (
+      <div className="border pr-3" key={item.id}>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-3">
+            <div className="w-2 bg-black"></div>
+            <div>
+              <h3>{item.tTitle}</h3>
+              <p className="text-sm text-gray-500 pb-2">{item.text.length > 25 ? item.text.slice(-25) : item.text}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-1">
+            <EditText handleDelete={handleDelete2} tTitle={item.tTitle} text={item.text} handleEdit={handleEdit2} dataId={item.id} />
+            <ToolTip link={item.text} />
+          </div>
+        </div>
+      </div>
+    )) :""}
+  </div>
+)}
+
         </div>
       </div>
     </>

@@ -12,6 +12,7 @@ interface DataContextType {
   data: LinkItem[];
   data2: TextItem[];
   recentData: LinkItem[];
+  recentData2: TextItem[];
   setData: React.Dispatch<React.SetStateAction<LinkItem[]>>;
   setData2: React.Dispatch<React.SetStateAction<TextItem[]>>;
   isLogin: boolean;
@@ -48,6 +49,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<LinkItem[]>([]);
   const [data2, setData2] = useState<TextItem[]>([]);
   const [recentData, setRecentData] = useState<LinkItem[]>([]);
+  const [recentData2, setRecentData2] = useState<TextItem[]>([]);
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
   const [searchResults, setSearchResults] = useState<Item[]>([]);
@@ -103,9 +105,10 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   const filterRecentData = (data: LinkItem[]) => {
     const oneHourAgo = Date.now() - 1000 * 60 * 60;
     const filteredData = data.filter((item) => item.createdAt > oneHourAgo);
-    // const filteredData2 = data2.filter((item) => item.createdAt > oneHourAgo);
+    const filteredData2 = data2.filter((item) => item.createdAt > oneHourAgo);
 
     setRecentData(filteredData);
+    setRecentData2(filteredData2);
   };
 
   const deleteData = async (id: string) => {
@@ -178,7 +181,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <DataContext.Provider value={{ data, data2, recentData, setData, setData2, isLogin, setIsLogin, user, deleteData, editData, deleteData2, editData2,  searchResults,
+    <DataContext.Provider value={{ data, data2, recentData, recentData2, setData, setData2, isLogin, setIsLogin, user, deleteData, editData, deleteData2, editData2,  searchResults,
       searchQuery,
       setSearchQuery: (query: string) => {
         setSearchQuery(query);
