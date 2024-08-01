@@ -6,8 +6,6 @@ import { auth, database } from '../firebase/store';
 import { ref, onValue, remove, update } from 'firebase/database';
 import { toast } from '@/components/ui/use-toast';
 
-// Define the type for the context state
-type Item = LinkItem | TextItem;
 interface DataContextType {
   data: LinkItem[];
   data2: TextItem[];
@@ -27,6 +25,8 @@ interface DataContextType {
   setSearchQuery: (query: string) => void;
 }
 
+// Define the type for the context state
+export type Item = LinkItem | TextItem;
 export interface LinkItem {
   id: string;
   title: string;
@@ -82,7 +82,7 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
           createdAt: new Date(data[key].createdAt).getTime(),
         }));
         setData(formattedLinks);
-        filterRecentData(formattedLinks); // Filter recent data after fetching
+        filterRecentData(formattedLinks, data); // Filter recent data after fetching
       }
     });
   }
@@ -98,17 +98,18 @@ const DataProvider = ({ children }: { children: ReactNode }) => {
           createdAt: new Date(data[key].createdAt).getTime(),
         }));
         setData2(formattedText);
+        filterRecentData(formattedText, data2);
       }
     });
   }
 
-  const filterRecentData = (data: LinkItem[]) => {
+  const filterRecentData = (links: LinkItem[], texts: TextItem[]) => {
     const oneHourAgo = Date.now() - 1000 * 60 * 60;
-    const filteredData = data.filter((item) => item.createdAt > oneHourAgo);
-    const filteredData2 = data2.filter((item) => item.createdAt > oneHourAgo);
+    const filteredLinks = links.filter(item => item.createdAt > oneHourAgo);
+    const filteredTexts = texts.filter(item => item.createdAt > oneHourAgo);
 
-    setRecentData(filteredData);
-    setRecentData2(filteredData2);
+    setRecentData(filteredLinks);
+    setRecentData2(filteredTexts);
   };
 
   const deleteData = async (id: string) => {

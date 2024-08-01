@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChangeEvent, FormEvent, useState } from "react";
 import { LinkItem, TextItem, useContextData } from "../context/contextApi";
@@ -11,6 +11,7 @@ import { ref, set } from 'firebase/database';
 import { Textarea } from "@/components/ui/textarea";
 
 import { useToast } from "@/components/ui/use-toast";
+import Link from "next/link";
 
 
 interface AddProps {
@@ -81,6 +82,45 @@ export function Add({ setOpenBox }: AddProps) {
     }
   };
 
+  // const extractTextLink = (textData:any) => {
+  //   const data = textData.split("\n").map(text => text.trim()).filter(text => text.length > 0);
+  //  return data
+  //   }
+
+//   const renderTextWithLinks = (text: string): JSX.Element[] => {
+//     const lines = text.split('\n');
+//     return lines.map((line, index) => {
+//         const urlPattern = /(https?:\/\/[^\s]+)/g;
+//         const parts = line.split(urlPattern);
+
+//         return (
+//             <div key={index}>
+//                 {parts.map((part, i) => (
+//                     urlPattern.test(part) ? (
+//                         <Link key={i} href={part} target="_blank" rel="noopener noreferrer">
+//                             {part}
+//                         </Link>
+//                     ) : (
+//                         <span key={i}>{part}</span>
+//                     )
+//                 ))}
+//             </div>
+//         );
+//     });
+// };
+
+// const extractTextLink = (textData: string): string[] => {
+//   // Split the text into lines, trim each line, and filter lines containing 'https:'
+//   const data = textData
+//       .split('\n')
+//       .map(text => text.trim())
+//       .filter(text => text.includes('https:'));
+
+//   return data;
+// };
+// console.log(extractTextLink(link2))
+
+
   const handleText = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (title2.length === 0 || link2.length === 0) {
@@ -90,7 +130,10 @@ export function Add({ setOpenBox }: AddProps) {
       try {
         const newItem: TextItem = {
           tTitle: capitalizeTitle(title2),
-          text: link2,
+          text: 
+          // extractTextLink(link2) 
+          link2
+          ,
           id: new Date().getTime().toString(),
           createdAt: Date.now()
         };
